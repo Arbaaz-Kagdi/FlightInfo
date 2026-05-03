@@ -1,0 +1,120 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.accordion {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.2rem;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.05);
+  transition: background 0.2s ease;
+}
+
+.accordion-header:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.accordion-title {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 1.05rem;
+}
+
+.accordion-content {
+  padding: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.flight-list, .disruption-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.flight-item {
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: transparent;
+}
+
+.flight-item:hover {
+  background: rgba(59, 130, 246, 0.15);
+  transform: translateX(4px);
+}
+
+.flight-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.3rem;
+}
+
+.flight-num {
+  font-weight: 700;
+  color: var(--accent-color);
+  font-size: 1.1rem;
+}
+
+.flight-airline {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.flight-route {
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  opacity: 0.8;
+}
+
+.disruption-item {
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.disruption-item:last-child {
+  border-bottom: none;
+}
+
+.disruption-airport {
+  font-weight: 700;
+  color: #ef4444; /* red */
+  font-size: 1.1rem;
+}
+
+.disruption-details {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+}
+
+.disruption-issue {
+  color: var(--text-primary);
+}
+
+.disruption-delay {
+  color: #fca5a5;
+}
