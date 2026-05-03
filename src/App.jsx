@@ -9,6 +9,33 @@ import { AlertCircle } from 'lucide-react';
 const API_KEY = import.meta.env.VITE_AIRLABS_API_KEY;
 const API_URL = 'https://airlabs.co/api/v9/flight';
 
+const getOffsetString = (localStr, utcTs) => {
+  if (!localStr || !utcTs) return '+00:00';
+  const localDate = new Date(localStr.replace(' ', 'T') + 'Z'); 
+  const localMs = localDate.getTime();
+  const utcMs = utcTs * 1000;
+  
+  let diffMin = Math.round((localMs - utcMs) / 60000);
+  
+  const sign = diffMin >= 0 ? '+' : '-';
+  diffMin = Math.abs(diffMin);
+  const hours = Math.floor(diffMin / 60);
+  const mins = diffMin % 60;
+  
+  return `${sign}${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+};
+
+const formatTimeWithOffset = (localStr, utcTs) => {
+  if (!localStr) return null;
+  const offset = getOffsetString(localStr, utcTs);
+  
+  // AirLabs often returns time without seconds (HH:mm). 
+  // FlightDetails.jsx expects HH:mm:ss+OFFSET to parse the minutes correctly.
+  const baseStr = localStr.replace(' ', 'T');
+  const hasSeconds = (baseStr.match(/:/g) || []).length >= 2;
+  return baseStr + (hasSeconds ? '' : ':00') + offset;
+};
+
 function App() {
   const [flightData, setFlightData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -37,15 +64,14 @@ function App() {
           flight_status: airlabsData.status === 'en-route' ? 'active' : airlabsData.status || 'active',
           departure: {
             airport: airlabsData.dep_name || "Origin Airport",
-            timezone: null, // FlightDetails expects UTC offset or parses the literal string
+            timezone: null,
             iata: airlabsData.dep_iata,
             icao: airlabsData.dep_icao,
             terminal: airlabsData.dep_terminal,
             gate: airlabsData.dep_gate,
-            // AirLabs returns "YYYY-MM-DD HH:mm". Append :00+00:00 to simulate the AviationStack bogus format that FlightDetails parses literally
-            scheduled: airlabsData.dep_time ? airlabsData.dep_time.replace(' ', 'T') + ':00+00:00' : null,
-            estimated: airlabsData.dep_estimated ? airlabsData.dep_estimated.replace(' ', 'T') + ':00+00:00' : null,
-            actual: airlabsData.dep_actual ? airlabsData.dep_actual.replace(' ', 'T') + ':00+00:00' : null
+            scheduled: formatTimeWithOffset(airlabsData.dep_time, airlabsData.dep_time_ts),
+            estimated: formatTimeWithOffset(airlabsData.dep_estimated, airlabsData.dep_estimated_ts),
+            actual: formatTimeWithOffset(airlabsData.dep_actual, airlabsData.dep_actual_ts)
           },
           arrival: {
             airport: airlabsData.arr_name || "Destination Airport",
@@ -54,9 +80,9 @@ function App() {
             icao: airlabsData.arr_icao,
             terminal: airlabsData.arr_terminal,
             gate: airlabsData.arr_gate,
-            scheduled: airlabsData.arr_time ? airlabsData.arr_time.replace(' ', 'T') + ':00+00:00' : null,
-            estimated: airlabsData.arr_estimated ? airlabsData.arr_estimated.replace(' ', 'T') + ':00+00:00' : null,
-            actual: airlabsData.arr_actual ? airlabsData.arr_actual.replace(' ', 'T') + ':00+00:00' : null
+            scheduled: formatTimeWithOffset(airlabsData.arr_time, airlabsData.arr_time_ts),
+            estimated: formatTimeWithOffset(airlabsData.arr_estimated, airlabsData.arr_estimated_ts),
+            actual: formatTimeWithOffset(airlabsData.arr_actual, airlabsData.arr_actual_ts)
           },
           airline: {
             name: airlabsData.airline_name || "Unknown Airline",
