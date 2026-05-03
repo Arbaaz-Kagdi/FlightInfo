@@ -6,7 +6,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 import Sidebar from './components/Sidebar';
 import { AlertCircle } from 'lucide-react';
 
-const API_KEY = '2cb8a2d8-14e1-4595-adde-30f0bb79878e';
+const API_KEY = import.meta.env.VITE_AIRLABS_API_KEY;
 const API_URL = 'https://airlabs.co/api/v9/flight';
 
 function App() {
